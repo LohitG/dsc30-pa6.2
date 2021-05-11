@@ -177,39 +177,39 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
      * @return true if insertion is successful and false otherwise
      */
     public boolean insert(T key) {
-        BSTNode temp = new BSTNode(null,null, key);
+        BSTNode temp = new BSTNode(null, null, key);
+        //used zybooks
         if (findKey(key)) {
             return false;
         }
         if (key == null) {
             throw new NullPointerException();
         }
-        if(this.root == null) {
+        if (this.root == null) {
             this.root = temp;
             nelems++;
-        }
-        else {
+        } else {
             BSTNode currentNode = this.root;
+            // keeps going until you reach the end of the tree
             while (currentNode != null) {
                 if (temp.getKey().compareTo(currentNode.getKey()) == -1) {
+                    // adds new node to the left if it does not exist
                     if (currentNode.getLeft() == null) {
                         currentNode.setleft(temp);
-                        currentNode = null;
                         nelems++;
                         return true;
-                    }
-                    else {
+                        // moves onto next level
+                    } else {
                         currentNode = currentNode.left;
                     }
-                }
-                else {
+                    // adds new node to the right it if does not exist
+                } else {
                     if (currentNode.getRight() == null) {
                         currentNode.setright(temp);
-                        currentNode = null;
                         nelems++;
                         return true;
-                    }
-                    else {
+                        // moves onto next level
+                    } else {
                         currentNode = currentNode.right;
                     }
                 }
@@ -230,14 +230,15 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
         if (key == null) {
             throw new NullPointerException();
         }
+        // keeps iterating until it reaches the end of the tree
         while (currentNode != null) {
             if (key.compareTo(currentNode.getKey()) == 0) {
                 return true;
-            }
-            else if (key.compareTo(currentNode.getKey()) == -1) {
+                // moves onto next level if smaller
+            } else if (key.compareTo(currentNode.getKey()) == -1) {
                 currentNode = currentNode.left;
-            }
-            else {
+            } else {
+                // moves onto next level if bigger
                 currentNode = currentNode.right;
             }
         }
@@ -260,15 +261,17 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
             throw new IllegalArgumentException();
         }
         BSTNode currentNode = this.root;
+        // keeps iterating until it reaches the end of the tree
         while (currentNode != null) {
+            // inserts data at the using the given key
             if (key.compareTo(currentNode.getKey()) == 0) {
                 currentNode.addNewInfo(data);
                 currentNode = null;
-            }
-            else if (key.compareTo(currentNode.getKey()) == -1) {
+                // moves onto next level if smaller
+            } else if (key.compareTo(currentNode.getKey()) == -1) {
                 currentNode = currentNode.left;
-            }
-            else {
+            } else {
+                // moves onto next level if bigger
                 currentNode = currentNode.right;
             }
         }
@@ -291,13 +294,14 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
         }
         BSTNode currentNode = this.root;
         while (currentNode != null) {
+            // returns the data list corresponding to the key
             if (key.compareTo(currentNode.getKey()) == 0) {
                 return currentNode.getDataList();
-            }
-            else if (key.compareTo(currentNode.getKey()) == -1) {
+                // moves onto next level if smaller
+            } else if (key.compareTo(currentNode.getKey()) == -1) {
                 currentNode = currentNode.left;
-            }
-            else {
+                // moves onto next level if bigger
+            } else {
                 currentNode = currentNode.right;
             }
         }
@@ -311,6 +315,7 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
      */
     public int findHeight() {
         return findHeightHelper(this.root);
+        //used zybooks
     }
 
     /**
@@ -320,11 +325,15 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
      * @return The height of the tree, -1 if BST is empty
      */
     private int findHeightHelper(BSTNode root) {
-        if(root == null) {
+        // used zybooks
+        if (root == null) {
             return -1;
         }
+        // recursively finds height of left side
         int leftHeight = findHeightHelper(root.left);
+        // recursively finds height of right side
         int rightHeight = findHeightHelper(root.right);
+        // compares which side is deeper to find the max height
         return 1 + Math.max(leftHeight, rightHeight);
     }
 
@@ -334,27 +343,18 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
      * BSTree_Iterator class acts as a stack for the BST.
      */
     public class BSTree_Iterator implements Iterator<T> {
-        Stack<T> stack;
+        Stack<BSTNode> stack;
         /**
          * BSTree_Iterator constructor initializes and populates
          * the iterator.
          */
         public BSTree_Iterator() {
-            Stack<T> stack = new Stack<T>();
-            Stack<BSTNode> nodeStack = new Stack<BSTNode>();
             BSTNode currentNode = root;
-            while (!stack.empty() || currentNode != null) {
-                if (currentNode != null) {
-                    nodeStack.push(currentNode);
-                    currentNode = currentNode.right;
-                }
-                else {
-                    currentNode = nodeStack.pop();
-                    stack.push(currentNode.getKey());
-                    currentNode = currentNode.left;
-                }
+            while (currentNode != null) {
+                stack.push(currentNode);
+                currentNode = currentNode.left;
             }
-            this.stack = stack;
+            System.out.println(stack.size());
         }
 
         /**
@@ -365,17 +365,32 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
             return !stack.isEmpty();
         }
 
+        /**
+         * Returns the next element in the iterator
+         * @return the next element
+         */
         public T next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            return stack.pop();
+            BSTNode temp = stack.pop();
+            if (temp.getRight() != null) {
+                BSTNode currentNode = temp.right;
+                while (currentNode != null) {
+                    stack.push(currentNode);
+                    currentNode = currentNode.left;
+                }
+            }
+            return temp.getKey();
         }
     }
 
+    /**
+     * Create and return a BSTree_Iterator
+     * @return a new BSTree_Iterator
+     */
     public Iterator<T> iterator() {
-        /* TODO */
-        return null;
+        return new BSTree_Iterator();
     }
 
     /* * * * * Extra Credit Methods * * * * */

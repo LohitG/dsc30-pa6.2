@@ -39,8 +39,8 @@ public class SearchEngine {
                 // read 5 lines per batch:
                 // movie, cast, studios, rating, trailing hyphen
                 String movie = scanner.nextLine().trim();
-                String cast[] = scanner.nextLine().split(" ");
-                String studios[] = scanner.nextLine().split(" ");
+                String[] cast = scanner.nextLine().split(" ");
+                String[] studios = scanner.nextLine().split(" ");
                 String rating = scanner.nextLine().trim();
                 scanner.nextLine();
 
@@ -87,15 +87,21 @@ public class SearchEngine {
         // search and output intersection results
         // hint: list's addAll() and retainAll() methods could be helpful
         for (String k: keys) {
+            if (!searchTree.findKey(k)) {
+                continue;
+            }
             LinkedList<String> temp = searchTree.findDataList(k);
             for (int i = 0; i < temp.size(); i++) {
-                if(!allReferences.contains(temp.get(i)))
-                {
+                if (!allReferences.contains(temp.get(i))) {
                     allReferences.add(temp.get(i));
                 }
             }
         }
         for (String k: keys) {
+            if (!searchTree.findKey(k)) {
+                allReferences.clear();
+                break;
+            }
             LinkedList<String> temp = searchTree.findDataList(k);
             allReferences.retainAll(temp);
         }
@@ -104,16 +110,20 @@ public class SearchEngine {
         // hint: list's addAll() and removeAll() methods could be helpful
         ArrayList<String> usedTerms = new ArrayList<String>();
         for (String k: keys) {
-            LinkedList<String> keyData = searchTree.findDataList(k);
             LinkedList<String> temp = new LinkedList<String>();
+            if (!searchTree.findKey(k)) {
+                print(k, temp);
+                continue;
+            }
+            LinkedList<String> keyData = searchTree.findDataList(k);
             for (int i = 0; i < keyData.size(); i++) {
-                if(!allReferences.contains(keyData.get(i)) &&
-                        !usedTerms.contains(keyData.get(i))) {
+                if (!allReferences.contains(keyData.get(i))
+                        && !usedTerms.contains(keyData.get(i))) {
                     temp.add(keyData.get(i));
                     usedTerms.add(keyData.get(i));
                 }
             }
-            if (temp.size() != 0) {
+            if(!temp.isEmpty() || allReferences.isEmpty()) {
                 print(k, temp);
             }
         }
@@ -158,15 +168,13 @@ public class SearchEngine {
         }
         query = query.substring(1);
         // populate search trees
-        populateSearchTrees(movieTree, studioTree, ratingTree,fileName);
+        populateSearchTrees(movieTree, studioTree, ratingTree, fileName);
         // choose the right tree to query
         if (searchKind == ACTORS_MOVIES) {
             searchMyQuery(movieTree, query);
-        }
-        else if (searchKind == STUDIOS_MOVIES) {
+        } else if (searchKind == STUDIOS_MOVIES) {
             searchMyQuery(studioTree, query);
-        }
-        else if (searchKind == ACTORS_RATINGS) {
+        } else if (searchKind == ACTORS_RATINGS) {
             searchMyQuery(ratingTree, query);
         }
     }
