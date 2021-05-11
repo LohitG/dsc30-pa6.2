@@ -90,8 +90,10 @@ public class BSTreeTester {
         assertEquals(new Integer(6),iter.next());
         assertEquals(new Integer(7),iter.next());
         assertEquals(new Integer(8),iter.next());
+        assertTrue(iter.hasNext());
         assertEquals(new Integer(10),iter.next());
         assertEquals(new Integer(13),iter.next());
+        assertTrue(iter.hasNext());
         assertEquals(new Integer(14),iter.next());
     }
 
