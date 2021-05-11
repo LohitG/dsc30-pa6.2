@@ -133,7 +133,7 @@ public class SearchEngine {
                 }
             }
             // avoid printing unnecessary messages
-            if(!temp.isEmpty() || allReferences.isEmpty()) {
+            if (!temp.isEmpty() || allReferences.isEmpty()) {
                 print(k, temp);
             }
         }

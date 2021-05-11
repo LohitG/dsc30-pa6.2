@@ -17,6 +17,7 @@ public class BSTreeTester {
         assertTrue(test.findKey("dummy"));
         assertFalse(test.findKey("lolll"));
         assertTrue(test.findKey("silly"));
+        assertEquals("lol", test.getRoot().getKey());
     }
 
     @Test
@@ -37,6 +38,7 @@ public class BSTreeTester {
         test.insert(14);
         test.insert(13);
         assertEquals(9, test.getSize());
+        assertEquals(new Integer(8), test.getRoot().getKey());
     }
 
     @Test
@@ -51,7 +53,21 @@ public class BSTreeTester {
         assertEquals(new Integer(10), test.findDataList(8).get(1));
         assertEquals(new Integer(9), test.findDataList(8).get(0));
         assertEquals(new Integer(5), test.findDataList(3).get(1));
+        assertEquals(new Integer(8), test.getRoot().getKey());
 
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void testBTSException() {
+        BSTree<Integer> test = new BSTree<Integer>();
+        test.insert(null);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testBTSInsertDataException() {
+        BSTree<Integer> test = new BSTree<Integer>();
+        test.insert(2);
+        test.insertData(1,3);
     }
 
     @Test
