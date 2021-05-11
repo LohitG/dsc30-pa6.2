@@ -5,16 +5,13 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Search Engine implementation.
  * 
- * @author TODO
- * @since  TODO
+ * @author Lohit Geddam
+ * @since  05/10/21
  */
 public class SearchEngine {
 
@@ -27,6 +24,9 @@ public class SearchEngine {
      * @param fileName   - name of the input file
      * @returns false if file not found, true otherwise
      */
+    private static final int ACTORS_MOVIES = 0;
+    private static final int STUDIOS_MOVIES = 1;
+    private static final int ACTORS_RATINGS = 2;
     public static boolean populateSearchTrees(
             BSTree<String> movieTree, BSTree<String> studioTree,
             BSTree<String> ratingTree, String fileName
@@ -83,12 +83,40 @@ public class SearchEngine {
         /* TODO */
         // process query
         String[] keys = query.toLowerCase().split(" ");
-
+        LinkedList<String> allReferences = new LinkedList<String>();
         // search and output intersection results
         // hint: list's addAll() and retainAll() methods could be helpful
-
+        for (String k: keys) {
+            LinkedList<String> temp = searchTree.findDataList(k);
+            for (int i = 0; i < temp.size(); i++) {
+                if(!allReferences.contains(temp.get(i)))
+                {
+                    allReferences.add(temp.get(i));
+                }
+            }
+        }
+        for (String k: keys) {
+            LinkedList<String> temp = searchTree.findDataList(k);
+            allReferences.retainAll(temp);
+        }
+        print(query, allReferences);
         // search and output individual results
         // hint: list's addAll() and removeAll() methods could be helpful
+        ArrayList<String> usedTerms = new ArrayList<String>();
+        for (String k: keys) {
+            LinkedList<String> keyData = searchTree.findDataList(k);
+            LinkedList<String> temp = new LinkedList<String>();
+            for (int i = 0; i < keyData.size(); i++) {
+                if(!allReferences.contains(keyData.get(i)) &&
+                        !usedTerms.contains(keyData.get(i))) {
+                    temp.add(keyData.get(i));
+                    usedTerms.add(keyData.get(i));
+                }
+            }
+            if (temp.size() != 0) {
+                print(k, temp);
+            }
+        }
 
     }
 
@@ -116,16 +144,30 @@ public class SearchEngine {
      */
     public static void main(String[] args) {
 
-        /* TODO */
         // initialize search trees
+        BSTree<String> movieTree = new BSTree<String>();
+        BSTree<String> ratingTree = new BSTree<String>();
+        BSTree<String> studioTree = new BSTree<String>();
 
         // process command line arguments
         String fileName = args[0];
         int searchKind = Integer.parseInt(args[1]);
-
+        String query = "";
+        for (int i = 2; i < args.length; i++) {
+            query += " " + args[i];
+        }
+        query = query.substring(1);
         // populate search trees
-
+        populateSearchTrees(movieTree, studioTree, ratingTree,fileName);
         // choose the right tree to query
-
+        if (searchKind == ACTORS_MOVIES) {
+            searchMyQuery(movieTree, query);
+        }
+        else if (searchKind == STUDIOS_MOVIES) {
+            searchMyQuery(studioTree, query);
+        }
+        else if (searchKind == ACTORS_RATINGS) {
+            searchMyQuery(ratingTree, query);
+        }
     }
 }

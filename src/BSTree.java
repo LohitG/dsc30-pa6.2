@@ -186,6 +186,7 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
         }
         if(this.root == null) {
             this.root = temp;
+            nelems++;
         }
         else {
             BSTNode currentNode = this.root;
@@ -194,6 +195,7 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
                     if (currentNode.getLeft() == null) {
                         currentNode.setleft(temp);
                         currentNode = null;
+                        nelems++;
                         return true;
                     }
                     else {
@@ -204,6 +206,7 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
                     if (currentNode.getRight() == null) {
                         currentNode.setright(temp);
                         currentNode = null;
+                        nelems++;
                         return true;
                     }
                     else {
