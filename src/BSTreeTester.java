@@ -1,6 +1,7 @@
 import org.junit.*;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 public class BSTreeTester {
@@ -14,6 +15,7 @@ public class BSTreeTester {
         assertTrue(test.findKey("bye"));
         assertTrue(test.findKey("lol"));
         assertTrue(test.findKey("dummy"));
+        assertFalse(test.findKey("lolll"));
         assertTrue(test.findKey("silly"));
     }
 
@@ -67,6 +69,14 @@ public class BSTreeTester {
         Iterator<Integer> iter = test.iterator();
         assertTrue(iter.hasNext());
         assertEquals(new Integer(1),iter.next());
+        assertEquals(new Integer(3),iter.next());
+        assertEquals(new Integer(4),iter.next());
+        assertEquals(new Integer(6),iter.next());
+        assertEquals(new Integer(7),iter.next());
+        assertEquals(new Integer(8),iter.next());
+        assertEquals(new Integer(10),iter.next());
+        assertEquals(new Integer(13),iter.next());
+        assertEquals(new Integer(14),iter.next());
     }
 
     @Test
@@ -77,7 +87,15 @@ public class BSTreeTester {
         test.insert(5);
         Iterator<Integer> iter = test.iterator();
         assertEquals(new Integer(3), iter.next());
-        assertEquals(new Integer(3), iter.next());
+        assertEquals(new Integer(4), iter.next());
     }
 
+    @Test (expected = NoSuchElementException.class)
+    public void testBSTIterator3() {
+        BSTree<Integer> test = new BSTree<Integer>();
+        test.insert(3);
+        Iterator<Integer> iter = test.iterator();
+        assertEquals(new Integer(3), iter.next());
+        iter.next();
+    }
 }

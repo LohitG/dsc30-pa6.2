@@ -350,11 +350,11 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
          */
         public BSTree_Iterator() {
             BSTNode currentNode = root;
+            stack = new Stack<BSTNode>();
             while (currentNode != null) {
                 stack.push(currentNode);
                 currentNode = currentNode.left;
             }
-            System.out.println(stack.size());
         }
 
         /**

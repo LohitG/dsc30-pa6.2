@@ -44,6 +44,7 @@ public class SearchEngine {
                 String rating = scanner.nextLine().trim();
                 scanner.nextLine();
 
+                // populate movieTree
                 for (String c: cast) {
                     movieTree.insert(c.toLowerCase());
                     if (!movieTree.findDataList(c.toLowerCase()).contains(movie)) {
@@ -51,6 +52,7 @@ public class SearchEngine {
                     }
                 }
 
+                // populate ratingTree
                 for (String c: cast) {
                     ratingTree.insert(c.toLowerCase());
                     if (!ratingTree.findDataList(c.toLowerCase()).contains(rating)) {
@@ -58,6 +60,7 @@ public class SearchEngine {
                     }
                 }
 
+                // populate studioTree
                 for (String s: studios) {
                     studioTree.insert(s.toLowerCase());
                     if (!studioTree.findDataList(s.toLowerCase()).contains(movie)) {
@@ -79,13 +82,13 @@ public class SearchEngine {
      * @param query      - query string
      */
     public static void searchMyQuery(BSTree<String> searchTree, String query) {
-
-        /* TODO */
         // process query
         String[] keys = query.toLowerCase().split(" ");
         LinkedList<String> allReferences = new LinkedList<String>();
         // search and output intersection results
         // hint: list's addAll() and retainAll() methods could be helpful
+
+        //populate allReferences
         for (String k: keys) {
             if (!searchTree.findKey(k)) {
                 continue;
@@ -97,6 +100,7 @@ public class SearchEngine {
                 }
             }
         }
+        // refine allReferences and remove any items not shared
         for (String k: keys) {
             if (!searchTree.findKey(k)) {
                 allReferences.clear();
@@ -106,9 +110,13 @@ public class SearchEngine {
             allReferences.retainAll(temp);
         }
         print(query, allReferences);
+        if (keys.length == 1) {
+            return;
+        }
         // search and output individual results
         // hint: list's addAll() and removeAll() methods could be helpful
         ArrayList<String> usedTerms = new ArrayList<String>();
+        // look for any unique items for each key
         for (String k: keys) {
             LinkedList<String> temp = new LinkedList<String>();
             if (!searchTree.findKey(k)) {
@@ -116,6 +124,7 @@ public class SearchEngine {
                 continue;
             }
             LinkedList<String> keyData = searchTree.findDataList(k);
+            // keep track of unique items
             for (int i = 0; i < keyData.size(); i++) {
                 if (!allReferences.contains(keyData.get(i))
                         && !usedTerms.contains(keyData.get(i))) {
@@ -123,11 +132,11 @@ public class SearchEngine {
                     usedTerms.add(keyData.get(i));
                 }
             }
+            // avoid printing unnecessary messages
             if(!temp.isEmpty() || allReferences.isEmpty()) {
                 print(k, temp);
             }
         }
-
     }
 
     /**
