@@ -330,20 +330,46 @@ public class BSTree<T extends Comparable<? super T>> implements Iterable {
 
     /* * * * * BST Iterator * * * * */
 
+    /**
+     * BSTree_Iterator class acts as a stack for the BST.
+     */
     public class BSTree_Iterator implements Iterator<T> {
+        Stack<T> stack;
+        /**
+         * BSTree_Iterator constructor initializes and populates
+         * the iterator.
+         */
         public BSTree_Iterator() {
             Stack<T> stack = new Stack<T>();
+            Stack<BSTNode> nodeStack = new Stack<BSTNode>();
+            BSTNode currentNode = root;
+            while (!stack.empty() || currentNode != null) {
+                if (currentNode != null) {
+                    nodeStack.push(currentNode);
+                    currentNode = currentNode.right;
+                }
+                else {
+                    currentNode = nodeStack.pop();
+                    stack.push(currentNode.getKey());
+                    currentNode = currentNode.left;
+                }
+            }
+            this.stack = stack;
         }
 
-
+        /**
+         * Check if the iterator has a next
+         * @return whether or not the iterator has a next
+         */
         public boolean hasNext() {
-            /* TODO */
-            return false;
+            return !stack.isEmpty();
         }
 
         public T next() {
-            /* TODO */
-            return null;
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return stack.pop();
         }
     }
 
